@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><base href="/Tugas-CT-Algoritma/" /> 
+<meta charset="UTF-8">
+<title>Visualisasi Keramik 2xN</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #eef2f7;
+        padding: 20px;
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .panel {
+        background: white;
+        padding: 15px;
+        display: inline-block;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    input {
+        padding: 8px;
+        width: 60px;
+        border-radius: 6px;
+        border: 1px solid #aaa;
+        text-align: center;
+    }
+
+    button {
+        padding: 8px 15px;
+        border: none;
+        background: #5a8dee;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    button:hover {
+        background: #3e6cd8;
+    }
+
+    #results {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 25px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    /* Satu baris solusi */
+    .solution {
+        display: flex;
+        padding: 6px;
+        background: #fff;
+        border-radius: 8px;
+        border: 2px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    }
+
+    /* Keramik vertikal */
+    .tile-v {
+        width: 30px;
+        height: 60px;
+        background: #8ad1c9;
+        border: 2px solid #4ea59b;
+        border-radius: 5px;
+        margin: 0 2px;
+    }
+
+    /* Keramik horizontal (1 kotak panjang) */
+    .tile-h {
+        width: 60px;
+        height: 28px;
+        background: #f7c68c;
+        border: 2px solid #d89a55;
+        border-radius: 5px;
+        margin: 1px 2px;
+    }
+
+    .tile-h:last-child {
+        margin-bottom: 0;
+    }
+
+    .group-h {
+        display: flex;
+        flex-direction: column;
+    }
+
+</style>
+</head>
+<body>
+
+<h1>Visualisasi Keramik Ruangan 2×N</h1>
+
+<div class="panel">
+    <label>Masukkan nilai N:</label>
+    <input type="number" id="nVal" value="3" min="1" max="12">
+    <button onclick="generate()">Tampilkan</button>
+    <p id="info"></p>
+</div>
+
+<div id="results"></div>
+
+<script>
+function generate() {
+    const n = parseInt(document.getElementById("nVal").value);
+    const container = document.getElementById("results");
+    const info = document.getElementById("info");
+
+    if (!n || n < 1) {
+        alert("N minimal 1");
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const combos = getComb(n);
+    info.innerText = `Jumlah kombinasi untuk 2×${n}: ${combos.length}`;
+
+    combos.forEach(c => {
+        const row = document.createElement("div");
+        row.className = "solution";
+
+        c.forEach(type => {
+            if (type === "V") {
+                const v = document.createElement("div");
+                v.className = "tile-v";
+                row.appendChild(v);
+            } else {
+                const group = document.createElement("div");
+                group.className = "group-h";
+
+                const h1 = document.createElement("div");
+                h1.className = "tile-h";
+
+                const h2 = document.createElement("div");
+                h2.className = "tile-h";
+
+                group.appendChild(h1);
+                group.appendChild(h2);
+                row.appendChild(group);
+            }
+        });
+
+        container.appendChild(row);
+    });
+}
+
+function getComb(n) {
+    if (n === 0) return [[]];
+    if (n < 0) return [];
+
+    let all = [];
+
+    getComb(n - 1).forEach(sub => {
+        all.push(["V", ...sub]);
+    });
+
+    getComb(n - 2).forEach(sub => {
+        all.push(["H", ...sub]);
+    });
+
+    return all;
+}
+</script>
+
+</body>
+</html>
